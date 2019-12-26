@@ -1,9 +1,7 @@
 import bpy
-from imutils import face_utils
 import cv2
 import time
 import numpy
-from bpy.props import FloatProperty
 
 # Download trained model
 # https://github.com/kurnianggoro/GSOC2017/tree/master/data
@@ -11,7 +9,7 @@ from bpy.props import FloatProperty
 # Install prerequisites    
 # python3 -m ensurepip
 # python3 -m pip install --upgrade pip --user
-# python3 -m pip install opencv-contrib-python imutils numpy --user
+# python3 -m pip install opencv-contrib-python numpy --user
 
 class OpenCVAnimOperator(bpy.types.Operator):
     """Operator which runs its self from a timer"""
@@ -22,19 +20,20 @@ class OpenCVAnimOperator(bpy.types.Operator):
     face_detect_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
     landmark_model_path = "/home/jason/Documents/Vincent/lbfmodel.yaml"
     
+    # Load models
     fm = cv2.face.createFacemarkLBF()
     fm.loadModel(landmark_model_path)
     cas = cv2.CascadeClassifier(face_detect_path)
     
     _timer = None
     _cap  = None
+    stop = False
     
+    # Webcam resolution:
     width = 640
     height = 480
-
-    stop :bpy.props.BoolProperty()
     
-    # 3D model points.    
+    # 3D model points. 
     model_points = numpy.array([
                                 (0.0, 0.0, 0.0),             # Nose tip
                                 (0.0, -330.0, -65.0),        # Chin
@@ -49,7 +48,7 @@ class OpenCVAnimOperator(bpy.types.Operator):
                             [0.0, height, height/2],
                             [0.0, 0.0, 1.0]], dtype = numpy.float32
                             )
-    
+                            
     # Keeps a moving average of given length
     def smooth_value(self, name, length, value):
         if not hasattr(self, 'smooth'):
@@ -78,7 +77,7 @@ class OpenCVAnimOperator(bpy.types.Operator):
             return (value - self.range[name][0]) / val_range
         else:
             return 0.0
-
+        
     # The main "loop"
     def modal(self, context, event):
 
@@ -89,15 +88,15 @@ class OpenCVAnimOperator(bpy.types.Operator):
         if event.type == 'TIMER':
             self.init_camera()
             _, image = self._cap.read()
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            gray = cv2.equalizeHist(gray)
+            #gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            #gray = cv2.equalizeHist(gray)
             
             # find faces
-            faces = self.cas.detectMultiScale(gray, 
+            faces = self.cas.detectMultiScale(image, 
                 scaleFactor=1.05,  
                 minNeighbors=3, 
                 flags=cv2.CASCADE_SCALE_IMAGE, 
-                minSize=(100, 100))
+                minSize=(int(self.width/5), int(self.width/5)))
             
             #find biggest face, and only keep it
             if type(faces) is numpy.ndarray and faces.size > 0: 
