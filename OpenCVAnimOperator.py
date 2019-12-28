@@ -18,7 +18,8 @@ class OpenCVAnimOperator(bpy.types.Operator):
     
     # Set paths to trained models downloaded above
     face_detect_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-    landmark_model_path = "/home/jason/Documents/Vincent/lbfmodel.yaml"
+    #landmark_model_path = "/home/jason/Documents/Vincent/lbfmodel.yaml" #Linux
+    landmark_model_path = "C:\\Users\\jkirs\\Downloads\\lbfmodel.yaml"    #Windows
     
     # Load models
     fm = cv2.face.createFacemarkLBF()
@@ -193,7 +194,7 @@ class OpenCVAnimOperator(bpy.types.Operator):
             self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
             self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self._cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-            time.sleep(0.5)
+            time.sleep(1.0)
     
     def stop_playback(self, scene):
         print(format(scene.frame_current) + " / " + format(scene.frame_end))
