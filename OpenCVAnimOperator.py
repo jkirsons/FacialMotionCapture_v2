@@ -3,13 +3,21 @@ import cv2
 import time
 import numpy
 
-# Download trained model
+# Download trained model (lbfmodel.yaml)
 # https://github.com/kurnianggoro/GSOC2017/tree/master/data
 
-# Install prerequisites    
+# Install prerequisites:
+
+# Linux:
 # python3 -m ensurepip
 # python3 -m pip install --upgrade pip --user
 # python3 -m pip install opencv-contrib-python numpy --user
+
+# Windows:
+# Open Command Prompt as Administrator
+# cd "C:\Program Files\Blender Foundation\Blender 2.81\2.81\python\bin"
+# python -m pip install --upgrade pip
+# python -m pip install opencv-contrib-python numpy
 
 class OpenCVAnimOperator(bpy.types.Operator):
     """Operator which runs its self from a timer"""
@@ -18,8 +26,9 @@ class OpenCVAnimOperator(bpy.types.Operator):
     
     # Set paths to trained models downloaded above
     face_detect_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-    #landmark_model_path = "/home/jason/Documents/Vincent/lbfmodel.yaml" #Linux
-    landmark_model_path = "C:\\Users\\jkirs\\Downloads\\lbfmodel.yaml"    #Windows
+    #landmark_model_path = "/home/username/Documents/Vincent/lbfmodel.yaml"  #Linux
+    #landmark_model_path = "/Users/username/Downloads/lbfmodel.yaml"         #Mac
+    landmark_model_path = "C:\\Users\\username\\Downloads\\lbfmodel.yaml"    #Windows
     
     # Load models
     fm = cv2.face.createFacemarkLBF()
