@@ -193,11 +193,11 @@ class OpenCVAnimOperator(bpy.types.Operator):
                     
                     # draw face markers
                     for (x, y) in shape:
-                        cv2.circle(image, (x, y), 2, (0, 255, 255), -1)
+                        cv2.circle(image, (int(x), int(y)), 2, (0, 255, 255), -1)
             
             # draw detected face
             for (x,y,w,h) in faces:
-                cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),1)
+                cv2.rectangle(image,(x, y),(x+w,y+h),(255,0,0),1)
             
             # Show camera image in a window                     
             cv2.imshow("Output", image)
